@@ -1,40 +1,150 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# Modul 7 - Redux pada Next.js
 
-## Getting Started
+Repository ini berisi hasil praktikum Modul 7 Pemrograman Web Enterprise mengenai penggunaan Bootstrap dan Redux pada Next.js menggunakan Pages Router.
 
-First, run the development server:
+## Praktikum 1 - Instalasi Bootstrap
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+Pada praktikum pertama dilakukan instalasi Bootstrap dan implementasi Bootstrap Modal pada Next.js.
+
+Bootstrap CSS di-import pada `pages/_app.tsx`, sedangkan JavaScript Bootstrap dijalankan pada sisi client menggunakan `useEffect`.
+
+### Hasil Praktikum
+
+![Bootstrap](images/modul-7-praktikum-1-bootstrap.png)
+
+---
+
+## Praktikum 2 - Login dengan Redux
+
+Pada praktikum kedua digunakan Redux Toolkit untuk mengelola state login.
+
+Library yang digunakan antara lain:
+
+- `@reduxjs/toolkit`
+- `react-redux`
+- `redux-persist`
+- `next-redux-wrapper`
+- `html-react-parser`
+
+State login disimpan pada reducer `auth`.
+
+Redux Persist digunakan agar state login tetap tersimpan ketika halaman di-refresh.
+
+### Kondisi Login
+
+![Login](images/modul-7-praktikum-2-login.png)
+
+### Kondisi Logout
+
+![Logout](images/modul-7-praktikum-2-logout.png)
+
+---
+
+## Praktikum 3 - Counter dengan Redux
+
+Pada praktikum ketiga dibuat aplikasi counter sederhana menggunakan Redux.
+
+State `totalCounter` disimpan pada reducer `counter`.
+
+Tombol `+` digunakan untuk menambah nilai dan tombol `-` untuk mengurangi nilai. Nilai counter dibatasi agar tidak kurang dari `0`.
+
+### Counter
+
+![Counter](images/modul-7-praktikum-3-counter.png)
+
+### Batas Minimum Counter
+
+![Counter Minimal](images/modul-7-praktikum-3-counter-minimal.png)
+
+---
+
+# Jawaban Pertanyaan Praktikum
+
+## 1. Apa kegunaan `useEffect` pada file `pages/_app.tsx`?
+
+`useEffect` digunakan untuk menjalankan kode setelah komponen dirender pada sisi client atau browser.
+
+Pada praktikum ini `useEffect` digunakan untuk memuat JavaScript Bootstrap:
+
+```tsx
+useEffect(() => {
+  import("bootstrap");
+}, []);
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Dengan demikian JavaScript Bootstrap dijalankan setelah aplikasi berada pada lingkungan browser.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## 2. Apa yang terjadi jika `useEffect` dihapus?
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+Pada implementasi praktikum ini, jika bagian `useEffect` beserta pemanggilan JavaScript Bootstrap dihapus, fitur Bootstrap yang membutuhkan JavaScript tidak akan berjalan dengan benar.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+Contohnya adalah Bootstrap Modal. Tampilan CSS Bootstrap masih dapat terlihat, tetapi interaksi seperti membuka dan menutup modal dapat tidak bekerja.
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 3. Mengapa atribut HTML `class` diganti menjadi `className`?
 
-## Learn More
+React dan Next.js menggunakan JSX.
 
-To learn more about Next.js, take a look at the following resources:
+Pada JSX, atribut CSS ditulis menggunakan `className`, bukan `class`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
+Contoh:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```tsx
+<div className="container">
+```
 
-## Deploy on Vercel
+`className` kemudian akan diterjemahkan menjadi atribut `class` pada HTML yang dihasilkan di browser.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 4. Apakah store pada Next.js dapat menyimpan banyak Redux reducer?
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+Ya.
+
+Satu Redux store dapat menggunakan beberapa reducer. Reducer tersebut dapat digabung menggunakan `combineReducers`.
+
+Pada praktikum ini contohnya:
+
+```js
+const rootReducer = combineReducers({
+  auth: authReducer,
+  counter: counterReducer,
+});
+```
+
+Artinya satu store menyimpan state dari reducer `auth` dan reducer `counter`.
+
+## 5. Apa kegunaan file `store.js`?
+
+File `store.js` digunakan sebagai pusat konfigurasi Redux Store.
+
+File tersebut menggabungkan reducer, membuat Redux store, mengatur middleware, serta mengatur `redux-persist` agar state tertentu dapat disimpan secara persisten.
+
+Pada project ini store mengelola state `auth` dan `counter`.
+
+## 6. Apa maksud kode berikut pada `pages/login.tsx`?
+
+```tsx
+const { isLogin } = useSelector((state) => state.auth);
+```
+
+`useSelector` digunakan untuk mengambil data dari Redux Store.
+
+`state.auth` mengakses state yang dikelola oleh reducer `auth`, kemudian property `isLogin` digunakan untuk mengetahui apakah pengguna sedang dalam kondisi login atau logout.
+
+## 7. Apa maksud kode berikut pada `pages/counter.tsx`?
+
+```tsx
+const { totalCounter } = useSelector((state) => state.counter);
+```
+
+Kode tersebut mengambil state `totalCounter` dari reducer `counter` yang tersimpan di Redux Store.
+
+Nilai `totalCounter` kemudian digunakan untuk menampilkan nilai counter pada halaman.
+
+---
+
+# Kesimpulan
+
+Pada Modul 7 dipelajari penggunaan state management Redux pada Next.js.
+
+Redux memungkinkan state aplikasi disimpan secara terpusat sehingga dapat digunakan oleh berbagai komponen. Redux Toolkit membantu menyederhanakan pembuatan reducer dan action, sedangkan Redux Persist memungkinkan state tertentu tetap tersimpan setelah halaman di-refresh.
+
+Selain itu, praktikum ini juga memperkenalkan integrasi Bootstrap pada aplikasi Next.js.

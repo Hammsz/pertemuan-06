@@ -1,3 +1,4 @@
+import counterReducer from "../counter/naikTurunSlice";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import authReducer from "../auth/authSlice";
 import storage from "redux-persist/lib/storage";
@@ -20,7 +21,9 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
   auth: authReducer,
+  counter: counterReducer,
 });
+
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
